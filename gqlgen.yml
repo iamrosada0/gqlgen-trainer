@@ -1,13 +1,17 @@
+
 schema:
-  - "schema.graphql"
+  - graph/schema.graphqls
+
 exec:
-  filename: "generated/generated.go"
-  package: generated
+  filename: generated/generated.go
+
 model:
-  filename: "models/models.go"
-  package: models
+  filename: model/models_gen.go
+  package: model
+
+autobind:
+  - "gqlgen_test/model"
+
 resolver:
-  filename: "resolver/resolver.go"
-  package: resolver
-  # Desabilitando a geração automática de resolvers para o tipo Post
- 
+  filename: resolver/resolver.go
+  type: Resolver
