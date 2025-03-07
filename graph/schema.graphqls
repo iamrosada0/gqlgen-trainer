@@ -1,3 +1,4 @@
+scalar Date
 
 type User {
   id: ID!
@@ -11,12 +12,36 @@ type Post{
   content:String!
   author:User!
 }
-
+type StreetImage {
+    id: ID!
+    url: String!
+    event: Event!  # Relacionamento com o Evento
+}
+type Event {
+    id: ID!
+    name: String!
+    description: String!
+    date: Date  
+    imageUrl: String!  
+    streetImages: [StreetImage!]!  # Imagens de rua relacionadas ao evento
+}
 type Query{
   users: [User!]!
   posts:[Post!]!
 }
 
 type Mutation{
+ createEvent(
+        name: String!, 
+        description: String!, 
+        price: Float!, 
+        date: Date, 
+        imageUrl: String!, 
+        streetImages: [NewStreetImageInput!]!  
+    ): Event!
   createPost(title:String!, content:String!):Post!
+}
+
+input NewStreetImageInput {
+    url: String!
 }
