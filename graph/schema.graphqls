@@ -11,3 +11,12 @@ type Post{
   content:String!
   author:User!
 }
+
+type Query{
+  users: [User!]!
+  posts:[Post!]!
+}
+
+type Mutation{
+  createPost(title:String!, content:String!):Post!
+}
