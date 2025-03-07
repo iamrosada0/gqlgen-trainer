@@ -13,5 +13,4 @@ autobind:
   - "gqlgen_test/model"
 
 resolver:
-  filename: resolver/resolver.go
   type: Resolver
