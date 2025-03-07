@@ -11,3 +11,6 @@ type NewStreetImageInput struct {
 
 type Query struct {
 }
+
+type Subscription struct {
+}

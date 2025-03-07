@@ -3,6 +3,9 @@ package resolver
 import (
 	"context"
 	"gqlgen_test/model"
+	"sync"
+
+	"github.com/google/uuid"
 )
 
 func (r *mutationResolver) CreateEvent(ctx context.Context, name string, description string, price float64, date *string, imageUrl string, streetImages []*model.NewStreetImageInput) (*model.Event, error) {
@@ -33,6 +36,33 @@ func (r *mutationResolver) CreateEvent(ctx context.Context, name string, descrip
 	// if err != nil {
 	// 	return nil, err
 	// }
+	r.SubscriptionResolver.PublishEvent(event)
 
 	return event, nil
+}
+
+var mu sync.Mutex
+
+// Mapa para armazenar assinantes da subscription
+var subscribers = make(map[string]chan *model.Event)
+
+func (r *subscriptionResolver) EventCreated(ctx context.Context) (<-chan *model.Event, error) {
+	eventChan := make(chan *model.Event, 1) // Canal bufferizado para evitar bloqueios
+	subscriberID := uuid.New().String()     // Criando um ID único para o assinante
+
+	// Adicionar o assinante à lista de inscritos
+	mu.Lock()
+	subscribers[subscriberID] = eventChan
+	mu.Unlock()
+
+	// Remover o assinante quando a conexão for fechada
+	go func() {
+		<-ctx.Done()
+		mu.Lock()
+		delete(subscribers, subscriberID)
+		close(eventChan)
+		mu.Unlock()
+	}()
+
+	return eventChan, nil
 }
