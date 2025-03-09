@@ -1,0 +1,16 @@
+
+schema:
+  - graph/schema.graphqls
+
+exec:
+  filename: generated/generated.go
+
+model:
+  filename: model/models_gen.go
+  package: model
+
+autobind:
+  - "gqlgen_test/model"
+
+resolver:
+  type: Resolver
