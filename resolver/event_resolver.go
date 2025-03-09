@@ -2,67 +2,81 @@ package resolver
 
 import (
 	"context"
-	"gqlgen_test/model"
+	"log"
 	"sync"
+
+	"gqlgen_test/model"
 
 	"github.com/google/uuid"
 )
 
+// Canal global para eventos
+var eventChannel = make(chan *model.Event, 1)
+
+// Lista de assinantes
+var subscribers = make(map[chan *model.Event]bool)
+var mu sync.Mutex
+
+// EventCreated agora repassa eventos para todos os assinantes
+func (r *subscriptionResolver) EventCreated(ctx context.Context) (<-chan *model.Event, error) {
+	log.Println("📡 Novo assinante conectado à EventCreated")
+
+	eventStream := make(chan *model.Event, 1)
+
+	mu.Lock()
+	subscribers[eventStream] = true
+	mu.Unlock()
+
+	// Remover o assinante quando desconectar
+	go func() {
+		<-ctx.Done()
+		mu.Lock()
+		delete(subscribers, eventStream)
+		close(eventStream)
+		mu.Unlock()
+		log.Println("❌ Assinante desconectado de EventCreated")
+	}()
+
+	return eventStream, nil
+}
+
+// CreateEvent agora notifica todos os assinantes
 func (r *mutationResolver) CreateEvent(ctx context.Context, name string, description string, price float64, date *string, imageUrl string, streetImages []*model.NewStreetImageInput) (*model.Event, error) {
-	// Criar um novo evento
+	log.Println("📥 Criando um novo evento...")
+
 	event := &model.Event{
-		ID:          "1", // Idealmente, gere um UUID aqui.
+		ID:          uuid.New().String(),
 		Name:        name,
 		Description: description,
 		Price:       price,
 		Date:        date,
 		ImageURL:    imageUrl,
-		LocationID:  "default-location", // Defina um valor padrão ou ajuste a lógica
+		LocationID:  "default-location",
 	}
 
 	// Criar imagens associadas ao evento
 	var images []*model.StreetImage
 	for _, img := range streetImages {
+		imageID := uuid.New().String()
 		images = append(images, &model.StreetImage{
-			ID:      "img-id", // Idealmente, gere um ID único.
+			ID:      imageID,
 			URL:     img.URL,
 			EventID: event.ID,
 		})
+		log.Printf("🖼️ Imagem associada ao evento: ID=%s, URL=%s\n", imageID, img.URL)
 	}
 	event.StreetImages = images
 
-	// Aqui você pode salvar o evento no banco de dados (se estiver usando GORM)
-	// err := r.DB.Create(event).Error
-	// if err != nil {
-	// 	return nil, err
-	// }
-	r.SubscriptionResolver.PublishEvent(event)
-
-	return event, nil
-}
-
-var mu sync.Mutex
-
-// Mapa para armazenar assinantes da subscription
-var subscribers = make(map[string]chan *model.Event)
-
-func (r *subscriptionResolver) EventCreated(ctx context.Context) (<-chan *model.Event, error) {
-	eventChan := make(chan *model.Event, 1) // Canal bufferizado para evitar bloqueios
-	subscriberID := uuid.New().String()     // Criando um ID único para o assinante
-
-	// Adicionar o assinante à lista de inscritos
-	mu.Lock()
-	subscribers[subscriberID] = eventChan
-	mu.Unlock()
-
-	// Remover o assinante quando a conexão for fechada
+	// Publicar evento para todos os assinantes
 	go func() {
-		<-ctx.Done()
 		mu.Lock()
-		delete(subscribers, subscriberID)
-		close(eventChan)
+		for subscriber := range subscribers {
+			subscriber <- event
+		}
 		mu.Unlock()
+		log.Println("📢 Evento enviado para assinantes")
 	}()
 
-	return eventChan, nil
+	log.Println("🎉 Evento criado com sucesso!")
+	return event, nil
 }
