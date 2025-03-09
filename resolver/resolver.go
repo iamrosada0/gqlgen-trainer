@@ -3,14 +3,6 @@ package resolver
 import "gqlgen_test/generated"
 
 type Resolver struct {
-	SubscriptionResolver *SubscriptionResolver
-}
-
-// NewResolver inicializa o resolver principal e a estrutura de subscriptions
-func NewResolver() *Resolver {
-	return &Resolver{
-		SubscriptionResolver: NewSubscriptionResolver(), // Inicializa as subscriptions
-	}
 }
 
 // Mutation retorna o resolver de Mutation.
