@@ -12,7 +12,7 @@ import (
 
 func main() {
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
-		Resolvers: resolver.NewResolver(), // Usa a função correta para inicializar o Resolver
+		Resolvers: &resolver.Resolver{}, // Usa a função correta para inicializar o Resolver
 	}))
 
 	http.Handle("/", playground.Handler("GraphQL Playground", "/query"))
