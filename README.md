@@ -124,6 +124,18 @@ autobind:
 
 resolver:
   type: Resolver  # Tipo principal do resolver, responsável por mapear as queries, mutations e subscriptions
+  # 📌 Observação: 
+  #resolver:
+  # type: Resolver  # Tipo principal do resolver
+  # layout: follow-schema  # Usa a estrutura baseada no schema
+  # dir: graph/resolvers   # Define a pasta onde os resolvers estarão
+  # package: resolvers     # Define o pacote dos resolvers
+
+  # OBS: O gqlgen gera um único arquivo resolver.go, mas para projetos grandes é recomendável separar os resolvers por funcionalidades. 
+  # Você pode ter resolvers específicos para User, Event, Subscription, Post, etc., organizando-os em arquivos separados dentro do diretório de resolvers.
+  #
+  # ATENÇÃO: Mesmo definindo essa estrutura, ao regenerar os resolvers, o gqlgen pode sobrescrever e excluir arquivos personalizados fora do padrão gerado.
+  # Por isso, é mais seguro utilizar apenas "type: Resolver" e gerenciar manualmente os resolvers, evitando perdas de código ao regenerar os arquivos.
 
 ```
 
