@@ -215,16 +215,16 @@ func (r *mutationResolver) CreateEvent(ctx context.Context, name string, descrip
 1. **Fork** o repositório
 2. **Clone** o projeto
    ```sh
-   git clone https://github.com/seu-usuario/gqlgen_test.git
+   git clone git clone https://github.com/iamrosada0/gqlgen-trainer.git
    ```
 3. **Crie uma branch** para sua funcionalidade
    ```sh
-   git checkout -b minha-feature
+   git checkout -b minha-feature-xx
    ```
 4. **Implemente e envie suas mudanças**
    ```sh
    git commit -m "Adicionando nova funcionalidade"
-   git push origin minha-feature
+   git push origin minha-feature-xx
    ```
 5. **Abra um Pull Request** 🚀
 
