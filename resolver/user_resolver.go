@@ -5,7 +5,6 @@ import (
 	"gqlgen_test/model"
 )
 
-// Resolver para a query de usuários
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	return []*model.User{
 		{ID: "1", Name: "Alice"},
