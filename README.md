@@ -88,18 +88,43 @@ O arquivo `gqlgen.yml` define como os arquivos do GraphQL são organizados e ger
 schema:
   - graph/schema.graphqls  # Caminho do schema GraphQL
 
+  # 📌 Dica: Para projetos grandes, divida o schema em arquivos separados.
+  # Isso melhora a organização e a manutenção do código. Exemplo:
+  #
+  # schema:
+  # - graph/schema.graphqls
+  # - graph/user.graphqls
+  # - graph/event.graphqls
+  # - graph/post.graphqls
+
 exec:
-  filename: generated/generated.go  # Arquivo onde o código gerado será salvo
+  filename: generated/generated.go  # Caminho do arquivo gerado pelo gqlgen
 
 model:
-  filename: model/models_gen.go  # Local dos modelos gerados automaticamente
-  package: model  # Pacote onde os modelos estão
+  filename: model/models_gen.go  # Arquivo onde os modelos gerados automaticamente serão salvos
+  package: model  # Pacote onde os modelos estarão armazenados
+
+  # 📌 Observação: Todos os modelos gerados automaticamente pelo gqlgen são baseados no schema GraphQL.
+  # Isso significa que qualquer tipo definido com "type" ou "input" no schema será incluído nesse arquivo.
+  # 
+  # ❗ Importante: Se você tiver tabelas com relacionamentos complexos, é recomendável **não deixar o gqlgen gerar automaticamente**.
+  # Isso porque os modelos gerados não podem ser modificados diretamente, o que pode causar problemas no seu projeto.
+  # Para esses casos, crie seus próprios modelos manualmente.
+  #
+  # 🔎 Exemplo: Abra o arquivo `model/event.go` e observe as linhas 11, 17 e 18.
+  # Elas representam um relacionamento que deveria ter sido tratado manualmente.
 
 autobind:
-  - "gqlgen_test/model"  # Pacote para vincular automaticamente os modelos
+  - "gqlgen_test/model"  # Pacote onde os modelos personalizados serão vinculados
+
+  # 📌 Observação: O `autobind` permite que você vincule modelos que **não devem ser gerados automaticamente** pelo gqlgen.
+  # Isso é útil para evitar que certos modelos sejam sobrescritos, especialmente aqueles que possuem lógica específica.
+  #
+  # Se você precisar criar vários modelos manuais, basta adicioná-los nesta seção.
 
 resolver:
-  type: Resolver  # Tipo principal do resolver
+  type: Resolver  # Tipo principal do resolver, responsável por mapear as queries, mutations e subscriptions
+
 ```
 
 ## 🚀 Rodando o Servidor
