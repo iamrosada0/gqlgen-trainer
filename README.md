@@ -5,7 +5,7 @@ Este projeto é uma API GraphQL construída com **gqlgen** para gerenciar evento
 ## 📂 Estrutura do Projeto
 
 ```
-/gqlgen_test
+/gqlgen-trainer
 │── /generated      # Código gerado automaticamente pelo gqlgen
 │── /model          # Modelos usados no GraphQL
 │── /resolver       # Resolvers das queries, mutations e subscriptions
