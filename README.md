@@ -2,6 +2,14 @@
 
 Este projeto é uma API GraphQL construída com **gqlgen** para gerenciar eventos, imagens de rua e usuários. Ele inclui suporte a **subscriptions**, permitindo que clientes recebam notificações em tempo real sobre eventos criados.
 
+## 🎯 Motivação do Projeto  
+
+Durante minha jornada desenvolvendo uma API GraphQL com **Golang**, escolhi o **gqlgen** como ferramenta principal. A promessa de código gerado automaticamente e tipagem forte parecia ideal, mas à medida que o projeto evoluía, surgiram desafios inesperados.  
+
+Meu projeto envolve muitas relações entre tabelas, e percebi que **nem todas as funções poderiam ser um resolver**. Além disso, precisei criar manualmente as estruturas das tabelas para manter um maior controle sobre os relacionamentos, em vez de permitir que o GraphQL gerasse tudo automaticamente. Isso fez com que o `gqlgen.yml` se tornasse confuso, cheio de regras difíceis de compreender e manter.  
+
+Diante disso, tomei a decisão de **simplificar o projeto**, criando algo mais enxuto e flexível, que me permita evoluir rapidamente sem perder controle sobre o código. Atualmente, a aplicação **não possui persistência de dados**—todos os dados são **mockados**—mas isso serve como um ponto de partida para construir algo mais robusto no futuro. 🚀
+
 ## 📂 Estrutura do Projeto
 
 ```
